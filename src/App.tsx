@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { StyleSheet, useColorScheme, View } from 'react-native'
+import { PlatformColor, StyleSheet, useColorScheme, View } from 'react-native'
 import MainScreen from './components/MainScreen'
 import LightTheme from './themes/LightTheme'
 import {
@@ -13,8 +13,38 @@ import {
 const styles = StyleSheet.create({
   appStyle: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 20,
+  },
+  menu: {
+    margin: 5,
+    height: 34,
+    width: 38,
+    borderRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icon: {
+    fontFamily: 'Segoe MDL2 Assets',
+    fontSize: 16,
+    color: PlatformColor('TextControlForeground'),
+  },
+  drawer: {
+    backgroundColor: PlatformColor('NavigationViewDefaultPaneBackground'),
+    height: '100%',
+  },
+  drawerText: {
+    color: PlatformColor('TextControlForeground'),
+  },
+  drawerTopDivider: {
+    borderTopWidth: 0.5,
+    borderColor: PlatformColor('TextControlForeground'),
+    borderRadius: 0,
+  },
+  drawerBottomDivider: {
+    borderBottomWidth: 0.5,
+    borderColor: PlatformColor('TextControlForeground'),
+    borderRadius: 0,
   },
 })
 

@@ -4,5 +4,6 @@ module.exports = {
   rules: {
     semi: ['error', 'never'],
     'react/react-in-jsx-scope': 'off',
+    'react-native/no-inline-styles': 'off',
   },
 }
