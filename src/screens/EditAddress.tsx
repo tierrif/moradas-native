@@ -33,7 +33,7 @@ const EditAddress = ({ navigation }: any) => {
   }
 
   const handleSave = async () => {
-    const replacedContent = content.replace('\r', '\n')
+    const replacedContent = content.replace(/\r/g, '\n')
     const split = replacedContent.split(' ')
     const zipCode = split[split.length - 2].split(' ')[0]
 

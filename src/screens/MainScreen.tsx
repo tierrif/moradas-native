@@ -92,22 +92,9 @@ const MainScreen = ({ navigation }: any) => {
     return (
       <TouchableHighlight
         onPress={() => handleEdit(id)}
-        style={{
-          paddingLeft: 10,
-          backgroundColor: colors.card,
-          borderRadius: 3,
-          marginBottom: 5,
-          width: '98%',
-        }}
+        style={styles.card}
         underlayColor={colors.border}>
-        <View
-          style={{
-            flexWrap: 'wrap',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 5,
-          }}>
+        <View style={styles.cardInterior}>
           <Text style={{ fontSize: 14 }}>{item.content.split('\n')[0]}</Text>
           <View style={{ alignSelf: 'flex-end', flexDirection: 'row' }}>
             <TouchableHighlight
@@ -138,27 +125,11 @@ const MainScreen = ({ navigation }: any) => {
               onDismiss={() => {
                 setShowFlyout(false)
               }}>
-              <View
-                style={{
-                  backgroundColor: colors.border,
-                  borderRadius: 3,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  shadowOffset: { width: 10, height: 10 },
-                  shadowColor: 'black',
-                  shadowOpacity: 1,
-                  elevation: 3,
-                  zIndex: 999,
-                  padding: 15,
-                }}>
+              <View style={styles.modal}>
                 <Text style={{ marginBottom: 30, fontSize: 16 }}>
                   Esta ação é irreversível.
                 </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
+                <View style={styles.asRow}>
                   <TouchableHighlight
                     onPress={async () => {
                       await handleDelete(currentId)
@@ -166,12 +137,7 @@ const MainScreen = ({ navigation }: any) => {
                     activeOpacity={0.2}
                     underlayColor="#AA0000"
                     style={{
-                      height: 40,
-                      width: 150,
-                      backgroundColor: colors.notification,
-                      borderRadius: 3,
-                      justifyContent: 'center',
-                      alignItems: 'center',
+                      ...styles.modalButton,
                       marginRight: 10,
                     }}>
                     <Text style={{ color: '#FFFFFF' }}>Eliminar</Text>
@@ -182,14 +148,7 @@ const MainScreen = ({ navigation }: any) => {
                     }}
                     activeOpacity={0.2}
                     underlayColor={colors.primary}
-                    style={{
-                      height: 40,
-                      width: 150,
-                      backgroundColor: colors.primary,
-                      borderRadius: 3,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
+                    style={styles.modalButton}>
                     <Text style={{ color: '#FFFFFF' }}>Cancelar</Text>
                   </TouchableHighlight>
                 </View>
@@ -220,25 +179,11 @@ const MainScreen = ({ navigation }: any) => {
         <ScreenWrapper style={styles.appStyle} navigation={navigation}>
           {showDeleteFlyout && (
             <Pressable
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                zIndex: 999,
-              }}
+              style={styles.modalOverlay}
               onPress={() => setShowDeleteFlyout(false)}
             />
           )}
-          <View
-            style={{
-              flexWrap: 'wrap',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
+          <View style={styles.container}>
             <Text style={styles.title}>Moradas</Text>
             <View style={{ flexDirection: 'row', flex: 1 }} />
             <TouchableHighlight
@@ -252,36 +197,14 @@ const MainScreen = ({ navigation }: any) => {
             </TouchableHighlight>
           </View>
           <TouchableOpacity onPress={handleCreate}>
-            <View
-              style={{
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                width: '100%',
-                alignItems: 'center',
-                backgroundColor: colors.primary,
-                borderRadius: 3,
-                padding: 5,
-              }}>
+            <View style={styles.newButton}>
               <Text style={{ color: 'white', ...styles.icon }}>&#xE710;</Text>
               <Text style={styles.iconButtonText}>Nova Morada</Text>
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              flexWrap: 'wrap',
-              flexDirection: 'row',
-              width: '100%',
-              marginTop: 20,
-            }}>
+          <View style={styles.searchHeader}>
             <TextInput
-              style={{
-                borderColor: colors.border,
-                borderWidth: 1,
-                color: colors.text,
-                width: '25%',
-                alignSelf: 'flex-start',
-                height: 34,
-              }}
+              style={styles.searchInput}
               onChangeText={onChangeText}
               value={search}
               placeholder="Pesquisar..."
@@ -305,10 +228,7 @@ const MainScreen = ({ navigation }: any) => {
                 setShowDeleteFlyout,
               )
             }}
-            style={{
-              width: '100%',
-              marginTop: 20,
-            }}
+            style={styles.list}
             keyExtractor={item => item.id.toString()}
             removeClippedSubviews
             onEndReached={() => {
