@@ -28,7 +28,7 @@ export const addAddress = async (newAddress: Address) => {
   }
 
   const addresses = await readAddressFile()
-  addresses.push(convertedAddress)
+  addresses.unshift(convertedAddress)
 
   await writeToAddressFile(addresses)
 }

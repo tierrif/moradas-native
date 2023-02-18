@@ -17,6 +17,16 @@ const App = () => {
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
+            transitionSpec: {
+              open: { animation: 'timing', config: { duration: 100 } },
+              close: { animation: 'timing', config: { duration: 100 } },
+            },
+            animationEnabled: true,
+            cardStyleInterpolator: ({ current }) => ({
+              cardStyle: {
+                opacity: current.progress,
+              },
+            }),
           }}>
           <Stack.Screen name="Home" component={MainScreen} />
           <Stack.Screen name="Edit" component={EditAddress} />

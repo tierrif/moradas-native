@@ -40,6 +40,7 @@ const useStyles = () => {
       fontSize: 14,
       borderBottomWidth: 0.5,
       marginBottom: 5,
+      marginTop: 30,
     },
     button: {
       height: 30,

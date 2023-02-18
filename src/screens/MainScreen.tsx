@@ -9,6 +9,7 @@ import {
   FlatList,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Pressable,
 } from 'react-native'
 import { Popup } from 'react-native-windows'
 import { deleteAddress, getAddresses } from '../addresses/address-handler'
@@ -37,7 +38,7 @@ const MainScreen = ({ navigation }: any) => {
   }, [])
 
   const handleCreate = () => {
-    console.log('Create')
+    navigation.push('Edit' as never, {})
   }
 
   const handleEdit = (id: number) => {
@@ -45,7 +46,7 @@ const MainScreen = ({ navigation }: any) => {
   }
 
   const handleDelete = async (id: number) => {
-    deleteAddress(id)
+    await deleteAddress(id)
     const newAddresses = await getAddresses()
     setAddressQueue(newAddresses)
     if (search === '') {
@@ -132,17 +133,13 @@ const MainScreen = ({ navigation }: any) => {
               isOpen={showFlyout}
               onDismiss={() => {
                 setShowFlyout(false)
-              }}
-              horizontalOffset={200}
-              verticalOffset={200}>
+              }}>
               <View
                 style={{
                   backgroundColor: colors.border,
-                  width: 200,
-                  height: 170,
                   borderRadius: 3,
                   alignItems: 'center',
-                  justifyContent: 'space-around',
+                  justifyContent: 'center',
                   shadowOffset: { width: 10, height: 10 },
                   shadowColor: 'black',
                   shadowOpacity: 1,
@@ -153,40 +150,46 @@ const MainScreen = ({ navigation }: any) => {
                 <Text style={{ marginBottom: 30, fontSize: 16 }}>
                   Esta ação é irreversível.
                 </Text>
-                <TouchableHighlight
-                  onPress={() => {
-                    setShowFlyout(false)
-                  }}
-                  activeOpacity={0.2}
-                  underlayColor={colors.primary}
+                <View
                   style={{
-                    height: 40,
-                    width: 150,
-                    backgroundColor: colors.primary,
-                    borderRadius: 3,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginBottom: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  <Text style={{ color: '#FFFFFF' }}>Cancelar</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  onPress={() => {
-                    handleDelete(id)
-                    setShowFlyout(false)
-                  }}
-                  activeOpacity={0.2}
-                  underlayColor="#AA0000"
-                  style={{
-                    height: 40,
-                    width: 150,
-                    backgroundColor: colors.notification,
-                    borderRadius: 3,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text style={{ color: '#FFFFFF' }}>Eliminar</Text>
-                </TouchableHighlight>
+                  <TouchableHighlight
+                    onPress={() => {
+                      handleDelete(id)
+                      setShowFlyout(false)
+                    }}
+                    activeOpacity={0.2}
+                    underlayColor="#AA0000"
+                    style={{
+                      height: 40,
+                      width: 150,
+                      backgroundColor: colors.notification,
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginRight: 10,
+                    }}>
+                    <Text style={{ color: '#FFFFFF' }}>Eliminar</Text>
+                  </TouchableHighlight>
+                  <TouchableHighlight
+                    onPress={() => {
+                      setShowFlyout(false)
+                    }}
+                    activeOpacity={0.2}
+                    underlayColor={colors.primary}
+                    style={{
+                      height: 40,
+                      width: 150,
+                      backgroundColor: colors.primary,
+                      borderRadius: 3,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{ color: '#FFFFFF' }}>Cancelar</Text>
+                  </TouchableHighlight>
+                </View>
               </View>
             </Popup>
             <TouchableHighlight
@@ -212,6 +215,20 @@ const MainScreen = ({ navigation }: any) => {
     <>
       {isScreenFocused && (
         <ScreenWrapper style={styles.appStyle} navigation={navigation}>
+          {showDeleteFlyout && (
+            <Pressable
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 999,
+              }}
+              onPress={() => setShowDeleteFlyout(false)}
+            />
+          )}
           <View
             style={{
               flexWrap: 'wrap',
