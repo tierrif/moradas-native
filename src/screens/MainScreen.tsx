@@ -1,5 +1,5 @@
 import { useIsFocused, useTheme } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import {
   Text,
   TextInput,
@@ -7,8 +7,6 @@ import {
   View,
   TouchableHighlight,
   FlatList,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
   Pressable,
 } from 'react-native'
 import { Popup } from 'react-native-windows'
@@ -18,12 +16,9 @@ import { ScreenWrapper } from '../components/ScreenWrapper'
 import useStyles from '../themes/styles'
 
 const MainScreen = ({ navigation }: any) => {
-  const [currentSize, setCurrentSize] = useState(20)
   const [search, setSearch] = useState('')
-  const [showDeleteFlyout, setShowDeleteFlyout] = useState(false)
-  const [addressQueue, setAddressQueue] = useState<Address[]>([])
+  const [showDeletePopup, setShowDeletePopup] = useState<number | null>(null)
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>([])
-  const [currentId, setCurrentId] = useState(-1)
 
   const isScreenFocused = useIsFocused()
   const { colors } = useTheme()
@@ -31,11 +26,7 @@ const MainScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     getAddresses().then(addresses => {
-      const newSize = 20
-      setCurrentSize(newSize)
-      setAddressQueue(addresses)
-      setCurrentAddresses(addresses.slice(0, newSize))
-      console.log(addresses)
+      setCurrentAddresses(addresses)
     })
   }, [])
 
@@ -43,28 +34,22 @@ const MainScreen = ({ navigation }: any) => {
     navigation.push('Edit' as never, {})
   }
 
-  const handleEdit = (id: number) => {
-    navigation.push('Edit' as never, { id } as never)
-  }
-
   const handleDelete = async (id: number) => {
-    console.log(id)
+    console.log('handleDelete: ' + id)
     await deleteAddress(id)
     const newAddresses = await getAddresses()
-    setAddressQueue(newAddresses)
     if (search === '') {
-      setCurrentAddresses(newAddresses.slice(0, currentSize))
+      setCurrentAddresses(newAddresses)
     } else {
       handleSearch(search)
     }
-    setShowDeleteFlyout(false)
+    setShowDeletePopup(null)
   }
 
   const handleSearch = async (e: string) => {
     if (e === '') {
       const allAddresses = await getAddresses()
-      setAddressQueue(allAddresses)
-      setCurrentAddresses(allAddresses.slice(0, currentSize))
+      setCurrentAddresses(allAddresses)
       return
     }
 
@@ -77,96 +62,66 @@ const MainScreen = ({ navigation }: any) => {
     const newAddresses = (await getAddresses()).filter(address =>
       normalize(address.content).includes(normalize(e)),
     )
-    setAddressQueue(newAddresses)
-    setCurrentAddresses(newAddresses.slice(0, currentSize))
-    setCurrentSize(20)
+    setCurrentAddresses(newAddresses)
   }
 
-  const onAddressRender = (
-    item: any,
-    showFlyout: boolean,
-    setShowFlyout: (showFlyout: boolean) => void,
-  ) => {
-    const id = item.id
+  const onAddressRender = useCallback(
+    (
+      item: any,
+      showFlyout: number | null,
+      setShowFlyout: (showFlyout: number | null) => void,
+    ) => {
+      const handleEdit = (id: number) => {
+        navigation.push('Edit' as never, { id } as never)
+      }
 
-    return (
-      <TouchableHighlight
-        onPress={() => handleEdit(id)}
-        style={styles.card}
-        underlayColor={colors.border}>
-        <View style={styles.cardInterior}>
-          <Text style={{ fontSize: 14 }}>{item.content.split('\n')[0]}</Text>
-          <View style={{ alignSelf: 'flex-end', flexDirection: 'row' }}>
-            <TouchableHighlight
-              accessibilityRole="button"
-              {...{ tooltip: 'Imprimir' }}
-              onPress={() => {}}
-              style={styles.searchButton}
-              underlayColor={colors.border}>
-              <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE749;</Text>
-            </TouchableHighlight>
-            <TouchableHighlight
-              accessibilityRole="button"
-              {...{ tooltip: 'Eliminar' }}
-              onPress={() => {
-                if (showFlyout) {
-                  return
-                }
+      const id = item.id
 
-                setCurrentId(id)
-                setShowFlyout(true)
-              }}
-              style={styles.searchButton}
-              underlayColor={colors.border}>
-              <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE74D;</Text>
-            </TouchableHighlight>
-            <Popup
-              isOpen={showFlyout}
-              onDismiss={() => {
-                setShowFlyout(false)
-              }}>
-              <View style={styles.modal}>
-                <Text style={{ marginBottom: 30, fontSize: 16 }}>
-                  Esta ação é irreversível.
-                </Text>
-                <View style={styles.asRow}>
-                  <TouchableHighlight
-                    onPress={async () => {
-                      await handleDelete(currentId)
-                    }}
-                    activeOpacity={0.2}
-                    underlayColor="#AA0000"
-                    style={{
-                      ...styles.modalButton,
-                      marginRight: 10,
-                    }}>
-                    <Text style={{ color: '#FFFFFF' }}>Eliminar</Text>
-                  </TouchableHighlight>
-                  <TouchableHighlight
-                    onPress={() => {
-                      setShowFlyout(false)
-                    }}
-                    activeOpacity={0.2}
-                    underlayColor={colors.primary}
-                    style={styles.modalButton}>
-                    <Text style={{ color: '#FFFFFF' }}>Cancelar</Text>
-                  </TouchableHighlight>
-                </View>
-              </View>
-            </Popup>
-            <TouchableHighlight
-              accessibilityRole="button"
-              {...{ tooltip: 'Editar' }}
-              onPress={() => handleEdit(id)}
-              style={styles.searchButton}
-              underlayColor={colors.border}>
-              <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE70F;</Text>
-            </TouchableHighlight>
+      return (
+        <TouchableHighlight
+          onPress={() => handleEdit(id)}
+          style={styles.card}
+          underlayColor={colors.border}>
+          <View style={styles.cardInterior}>
+            <Text style={{ fontSize: 14 }}>{item.content.split('\n')[0]}</Text>
+            <View style={{ alignSelf: 'flex-end', flexDirection: 'row' }}>
+              <TouchableHighlight
+                accessibilityRole="button"
+                {...{ tooltip: 'Imprimir' }}
+                onPress={() => {}}
+                style={styles.searchButton}
+                underlayColor={colors.border}>
+                <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE749;</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                accessibilityRole="button"
+                {...{ tooltip: 'Eliminar' }}
+                onPress={() => {
+                  if (showFlyout) {
+                    return
+                  }
+
+                  setShowFlyout(id)
+                }}
+                style={styles.searchButton}
+                underlayColor={colors.border}>
+                <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE74D;</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                accessibilityRole="button"
+                {...{ tooltip: 'Editar' }}
+                onPress={() => handleEdit(id)}
+                style={styles.searchButton}
+                underlayColor={colors.border}>
+                <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE70F;</Text>
+              </TouchableHighlight>
+            </View>
           </View>
-        </View>
-      </TouchableHighlight>
-    )
-  }
+        </TouchableHighlight>
+      )
+    },
+    [colors, styles, navigation],
+  )
 
   const onChangeText = (text: string) => {
     setSearch(text)
@@ -177,12 +132,49 @@ const MainScreen = ({ navigation }: any) => {
     <>
       {isScreenFocused && (
         <ScreenWrapper style={styles.appStyle} navigation={navigation}>
-          {showDeleteFlyout && (
+          {showDeletePopup !== null && (
             <Pressable
               style={styles.modalOverlay}
-              onPress={() => setShowDeleteFlyout(false)}
+              onPress={() => setShowDeletePopup(null)}
             />
           )}
+          <Popup
+            isOpen={showDeletePopup !== null}
+            onDismiss={() => {
+              setShowDeletePopup(null)
+            }}>
+            <View style={styles.modal}>
+              <Text style={{ marginBottom: 30, fontSize: 16 }}>
+                Esta ação é irreversível.
+              </Text>
+              <View style={styles.asRow}>
+                <TouchableHighlight
+                  onPress={async () => {
+                    await handleDelete(showDeletePopup!!)
+                  }}
+                  activeOpacity={0.2}
+                  underlayColor="#AA0000"
+                  style={{
+                    ...styles.modalButton,
+                    marginRight: 10,
+                  }}>
+                  <Text style={{ color: '#FFFFFF' }}>Eliminar</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  onPress={() => {
+                    setShowDeletePopup(null)
+                  }}
+                  activeOpacity={0.2}
+                  underlayColor={colors.primary}
+                  style={{
+                    ...styles.modalButton,
+                    backgroundColor: colors.primary,
+                  }}>
+                  <Text style={{ color: '#FFFFFF' }}>Cancelar</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Popup>
           <View style={styles.container}>
             <Text style={styles.title}>Moradas</Text>
             <View style={{ flexDirection: 'row', flex: 1 }} />
@@ -220,31 +212,17 @@ const MainScreen = ({ navigation }: any) => {
           </View>
           <FlatList
             data={currentAddresses}
-            scrollEnabled={!showDeleteFlyout}
+            scrollEnabled={!showDeletePopup}
             renderItem={i => {
               return onAddressRender(
                 i.item,
-                showDeleteFlyout,
-                setShowDeleteFlyout,
+                showDeletePopup,
+                setShowDeletePopup,
               )
             }}
             style={styles.list}
             keyExtractor={item => item.id.toString()}
             removeClippedSubviews
-            onEndReached={() => {
-              setCurrentAddresses(
-                currentAddresses.concat(
-                  addressQueue.slice(currentSize, currentSize + 20),
-                ),
-              )
-              setCurrentSize(currentSize + 20)
-            }}
-            onScroll={(e: NativeSyntheticEvent<NativeScrollEvent>) => {
-              if (e.nativeEvent.contentOffset.y === 0) {
-                setCurrentAddresses(addressQueue.slice(0, 20))
-                setCurrentSize(20)
-              }
-            }}
           />
         </ScreenWrapper>
       )}
