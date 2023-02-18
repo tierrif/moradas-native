@@ -4,6 +4,6 @@
     "\\windows",
     "\\windows\\moradas_native"
   ],
-  "SelectedNode": "\\windows\\moradas_native\\Package.appxmanifest",
+  "SelectedNode": "\\windows\\moradas_native\\pch.h",
   "PreviewInSolutionExplorer": false
 }

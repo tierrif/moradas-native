@@ -1,5 +1,5 @@
 import { useTheme } from '@react-navigation/native'
-import { StyleSheet } from 'react-native-windows/types'
+import { StyleSheet } from 'react-native-windows'
 
 const useStyles = () => {
   const { colors } = useTheme()

@@ -1,5 +1,5 @@
 import { useIsFocused, useTheme } from '@react-navigation/native'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Text,
   TextInput,
@@ -11,23 +11,30 @@ import {
   NativeScrollEvent,
 } from 'react-native'
 import { Popup } from 'react-native-windows'
-import { getAddresses } from '../addresses/address-handler'
+import { deleteAddress, getAddresses } from '../addresses/address-handler'
 import { Address } from '../addresses/types'
 import { ScreenWrapper } from '../components/ScreenWrapper'
 import useStyles from '../themes/styles'
 
 const MainScreen = ({ navigation }: any) => {
   const [currentSize, setCurrentSize] = useState(20)
-  const [currentAddresses, setCurrentAddresses] = useState<Address[]>(
-    getAddresses().slice(0, currentSize),
-  )
-
   const [search, setSearch] = useState('')
   const [showDeleteFlyout, setShowDeleteFlyout] = useState(false)
-  const [addressQueue, setAddressQueue] = useState<Address[]>(getAddresses())
+  const [addressQueue, setAddressQueue] = useState<Address[]>([])
+  const [currentAddresses, setCurrentAddresses] = useState<Address[]>([])
+
   const isScreenFocused = useIsFocused()
   const { colors } = useTheme()
   const styles = useStyles()
+
+  useEffect(() => {
+    getAddresses().then(addresses => {
+      const newSize = 20
+      setCurrentSize(newSize)
+      setAddressQueue(addresses)
+      setCurrentAddresses(addresses.slice(0, newSize))
+    })
+  }, [])
 
   const handleCreate = () => {
     console.log('Create')
@@ -37,13 +44,21 @@ const MainScreen = ({ navigation }: any) => {
     navigation.push('Edit' as never, { id } as never)
   }
 
-  const handleDelete = (id: number) => {
-    console.log(id)
+  const handleDelete = async (id: number) => {
+    deleteAddress(id)
+    const newAddresses = await getAddresses()
+    setAddressQueue(newAddresses)
+    if (search === '') {
+      setCurrentAddresses(newAddresses.slice(0, currentSize))
+    } else {
+      handleSearch(search)
+    }
+    setShowDeleteFlyout(false)
   }
 
-  const handleSearch = (e: string) => {
+  const handleSearch = async (e: string) => {
     if (e === '') {
-      const allAddresses = getAddresses()
+      const allAddresses = await getAddresses()
       setAddressQueue(allAddresses)
       setCurrentAddresses(allAddresses.slice(0, currentSize))
       return
@@ -55,7 +70,7 @@ const MainScreen = ({ navigation }: any) => {
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
 
-    const newAddresses = getAddresses().filter(address =>
+    const newAddresses = (await getAddresses()).filter(address =>
       normalize(address.content).includes(normalize(e)),
     )
     setAddressQueue(newAddresses)
