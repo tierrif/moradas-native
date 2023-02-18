@@ -212,7 +212,25 @@ const MainScreen = ({ navigation }: any) => {
     <>
       {isScreenFocused && (
         <ScreenWrapper style={styles.appStyle} navigation={navigation}>
-          <Text style={styles.title}>Moradas</Text>
+          <View
+            style={{
+              flexWrap: 'wrap',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={styles.title}>Moradas</Text>
+            <View style={{ flexDirection: 'row', flex: 1 }} />
+            <TouchableHighlight
+              accessibilityRole="button"
+              accessibilityLabel="Navigation bar expanded"
+              {...{ tooltip: 'Definições' }}
+              onPress={() => navigation.push('Settings' as never)}
+              activeOpacity={0.5783}
+              underlayColor="rgba(0, 0, 0, 0.0241);">
+              <Text style={styles.icon}>&#xE713;</Text>
+            </TouchableHighlight>
+          </View>
           <TouchableOpacity onPress={handleCreate}>
             <View
               style={{

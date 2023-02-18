@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, StyleSheet, TouchableHighlight, Text } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { PlatformColor } from 'react-native'
-import { useTheme } from '@react-navigation/native'
 
 const styles = StyleSheet.create({
   container: {
@@ -32,38 +31,9 @@ const styles = StyleSheet.create({
   },
 })
 
-export function ScreenWrapper({ navigation, children, style }: any) {
-  const { colors } = useTheme()
-
+export function ScreenWrapper({ children, style }: any) {
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          backgroundColor: colors.border,
-          width: 48,
-          height: '100%',
-        }}>
-        <View style={{ flex: 1 }}>
-          <View
-            style={{
-              alignSelf: 'stretch',
-              flexDirection: 'column',
-              flex: 1,
-              bottom: 0,
-            }}
-          />
-          <TouchableHighlight
-            accessibilityRole="button"
-            accessibilityLabel="Navigation bar expanded"
-            {...{ tooltip: 'Definições' }}
-            style={styles.menu}
-            onPress={() => navigation.push('Settings' as never)}
-            activeOpacity={0.5783}
-            underlayColor="rgba(0, 0, 0, 0.0241);">
-            <Text style={styles.icon}>&#xE713;</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
       <View style={style}>{children}</View>
     </View>
   )

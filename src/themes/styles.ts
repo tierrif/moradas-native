@@ -9,6 +9,7 @@ const useStyles = () => {
       flex: 1,
       alignItems: 'flex-start',
       padding: 20,
+      paddingTop: 0,
       backgroundColor: '#EEEEEE',
     },
     searchButton: {
