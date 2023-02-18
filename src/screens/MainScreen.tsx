@@ -1,7 +1,6 @@
 import { useIsFocused, useTheme } from '@react-navigation/native'
 import { useState } from 'react'
 import {
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -12,53 +11,13 @@ import {
   NativeScrollEvent,
 } from 'react-native'
 import { Popup } from 'react-native-windows'
-import { addresses } from '../../addresses.json'
+import { getAddresses } from '../addresses/address-handler'
+import { Address } from '../addresses/types'
 import { ScreenWrapper } from '../components/ScreenWrapper'
-
-type Address = {
-  content: string
-  zipCode: string
-  username?: string
-  id: number
-}
-
-const styles = StyleSheet.create({
-  appStyle: {
-    flex: 1,
-    alignItems: 'flex-start',
-    padding: 20,
-    backgroundColor: '#EEEEEE',
-  },
-  searchButton: {
-    height: 33,
-    marginLeft: 5,
-    width: 38,
-    borderRadius: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontWeight: '200',
-    fontSize: 26,
-    borderBottomWidth: 0.5,
-    marginBottom: 25,
-  },
-  icon: {
-    fontFamily: 'Segoe MDL2 Assets',
-    fontSize: 16,
-  },
-  iconButtonText: {
-    color: 'white',
-    fontSize: 16,
-    marginLeft: 5,
-  },
-})
+import useStyles from '../themes/styles'
 
 const MainScreen = ({ navigation }: any) => {
   const [currentSize, setCurrentSize] = useState(20)
-  const getAddresses = (): Address[] => {
-    return addresses.map((address, index) => ({ ...address, id: index }))
-  }
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>(
     getAddresses().slice(0, currentSize),
   )
@@ -68,6 +27,7 @@ const MainScreen = ({ navigation }: any) => {
   const [addressQueue, setAddressQueue] = useState<Address[]>(getAddresses())
   const isScreenFocused = useIsFocused()
   const { colors } = useTheme()
+  const styles = useStyles()
 
   const handleCreate = () => {
     console.log('Create')

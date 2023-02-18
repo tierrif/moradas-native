@@ -1,62 +1,15 @@
 'use strict'
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import { Text, TouchableHighlight, View } from 'react-native'
 import React from 'react'
 import { useTheme, useIsFocused } from '@react-navigation/native'
 import { ScreenWrapper } from '../components/ScreenWrapper'
-
-const createStyles = (colors: any) =>
-  StyleSheet.create({
-    appStyle: {
-      flex: 1,
-      alignItems: 'flex-start',
-      padding: 20,
-      backgroundColor: '#EEEEEE',
-    },
-    heading: {
-      marginTop: 30,
-      marginBottom: 10,
-      fontSize: 23,
-      color: colors.text,
-    },
-    text: {
-      paddingTop: 5,
-      paddingBottom: 5,
-      color: colors.text,
-    },
-    title: {
-      fontWeight: '200',
-      fontSize: 26,
-      marginTop: 20,
-      marginBottom: 10,
-      color: colors.text,
-    },
-    scrollView: {
-      paddingRight: 20,
-    },
-    settingContainer: {
-      alignItems: 'flex-start',
-    },
-    button: {
-      height: 30,
-      width: 30,
-      marginRight: 10,
-      padding: 5,
-      borderRadius: 3,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: colors.border,
-    },
-    icon: {
-      fontFamily: 'Segoe MDL2 Assets',
-      fontSize: 60,
-    },
-  })
+import useStyles from '../themes/styles'
 
 export const SettingsPage: React.FunctionComponent<{}> = ({
   navigation,
 }: any) => {
   const { colors } = useTheme()
-  const styles = createStyles(colors)
+  const styles = useStyles()
   const isScreenFocused = useIsFocused()
 
   const handleBack = () => {
