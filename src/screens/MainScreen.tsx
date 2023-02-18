@@ -23,6 +23,7 @@ const MainScreen = ({ navigation }: any) => {
   const [showDeleteFlyout, setShowDeleteFlyout] = useState(false)
   const [addressQueue, setAddressQueue] = useState<Address[]>([])
   const [currentAddresses, setCurrentAddresses] = useState<Address[]>([])
+  const [currentId, setCurrentId] = useState(-1)
 
   const isScreenFocused = useIsFocused()
   const { colors } = useTheme()
@@ -34,6 +35,7 @@ const MainScreen = ({ navigation }: any) => {
       setCurrentSize(newSize)
       setAddressQueue(addresses)
       setCurrentAddresses(addresses.slice(0, newSize))
+      console.log(addresses)
     })
   }, [])
 
@@ -46,6 +48,7 @@ const MainScreen = ({ navigation }: any) => {
   }
 
   const handleDelete = async (id: number) => {
+    console.log(id)
     await deleteAddress(id)
     const newAddresses = await getAddresses()
     setAddressQueue(newAddresses)
@@ -84,7 +87,7 @@ const MainScreen = ({ navigation }: any) => {
     showFlyout: boolean,
     setShowFlyout: (showFlyout: boolean) => void,
   ) => {
-    const { id } = item
+    const id = item.id
 
     return (
       <TouchableHighlight
@@ -123,6 +126,7 @@ const MainScreen = ({ navigation }: any) => {
                   return
                 }
 
+                setCurrentId(id)
                 setShowFlyout(true)
               }}
               style={styles.searchButton}
@@ -156,9 +160,8 @@ const MainScreen = ({ navigation }: any) => {
                     justifyContent: 'space-between',
                   }}>
                   <TouchableHighlight
-                    onPress={() => {
-                      handleDelete(id)
-                      setShowFlyout(false)
+                    onPress={async () => {
+                      await handleDelete(currentId)
                     }}
                     activeOpacity={0.2}
                     underlayColor="#AA0000"
@@ -295,9 +298,13 @@ const MainScreen = ({ navigation }: any) => {
           <FlatList
             data={currentAddresses}
             scrollEnabled={!showDeleteFlyout}
-            renderItem={i =>
-              onAddressRender(i.item, showDeleteFlyout, setShowDeleteFlyout)
-            }
+            renderItem={i => {
+              return onAddressRender(
+                i.item,
+                showDeleteFlyout,
+                setShowDeleteFlyout,
+              )
+            }}
             style={{
               width: '100%',
               marginTop: 20,

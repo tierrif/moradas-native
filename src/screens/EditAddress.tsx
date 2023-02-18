@@ -1,7 +1,11 @@
 import { useRoute, useTheme } from '@react-navigation/native'
 import { useEffect, useState } from 'react'
 import { Text, TextInput, TouchableHighlight, View } from 'react-native'
-import { editAddress, getAddresses } from '../addresses/address-handler'
+import {
+  editAddress,
+  getAddresses,
+  addAddress,
+} from '../addresses/address-handler'
 import { ScreenWrapper } from '../components/ScreenWrapper'
 import useStyles from '../themes/styles'
 
@@ -29,10 +33,11 @@ const EditAddress = ({ navigation }: any) => {
   }
 
   const handleSave = async () => {
+    const replacedContent = content.replace('\r', '\n')
+    const split = replacedContent.split(' ')
+    const zipCode = split[split.length - 2].split(' ')[0]
+
     if (isEdit) {
-      const replacedContent = content.replace('\r', '\n')
-      const split = replacedContent.split(' ')
-      const zipCode = split[split.length - 2].split(' ')[0]
       await editAddress({
         content: replacedContent,
         username: nick,
@@ -40,7 +45,11 @@ const EditAddress = ({ navigation }: any) => {
         zipCode,
       })
     } else {
-      addresses.push({ content })
+      await addAddress({
+        content: replacedContent,
+        username: nick,
+        zipCode,
+      })
     }
     navigation.push('Home')
   }

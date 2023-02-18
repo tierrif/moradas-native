@@ -20,15 +20,9 @@ export const editAddress = async (newAddress: Address) => {
   await writeToAddressFile(addresses)
 }
 
-export const addAddress = async (newAddress: Address) => {
-  const convertedAddress: RawAddress = {
-    content: newAddress.content,
-    zipCode: newAddress.zipCode,
-    username: newAddress.username,
-  }
-
+export const addAddress = async (newAddress: RawAddress) => {
   const addresses = await readAddressFile()
-  addresses.unshift(convertedAddress)
+  addresses.unshift(newAddress)
 
   await writeToAddressFile(addresses)
 }
