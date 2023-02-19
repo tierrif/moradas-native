@@ -7,7 +7,7 @@ import useStyles from '../themes/styles'
 import htmlToPdf from '../NativePDFGen'
 
 import RNPrint from 'react-native-print'
-import { DocumentDirectoryPath, writeFile } from 'react-native-fs'
+import { DocumentDirectoryPath, unlink, writeFile } from 'react-native-fs'
 
 const PrintScreen = ({ navigation }: any) => {
   const { colors } = useTheme()
@@ -68,14 +68,17 @@ const PrintScreen = ({ navigation }: any) => {
             font-size: 18px;
             ">${content.replace(/\n/g, '<br>')}</h1>`
             await writeFile(DocumentDirectoryPath + '/file.html', html)
+            const pdf = genFileName(7) + '.pdf'
             htmlToPdf?.ConvertHtmlToPdf(
               'file.html',
-              genFileName(7) + '.pdf',
-              (path?: string) => {
+              pdf,
+              async (path?: string) => {
                 if (path && !path.startsWith('[ERR]')) {
-                  RNPrint.print({
+                  await RNPrint.print({
                     filePath: path,
                   })
+
+                  await unlink(DocumentDirectoryPath + '/' + pdf)
                 } else if (path?.startsWith('[ERR]')) {
                   console.error(path)
                 }

@@ -15,7 +15,7 @@ namespace moradas_native_cpp {
 
 struct PDFGenSpec : winrt::Microsoft::ReactNative::TurboModuleSpec {
   static constexpr auto methods = std::tuple{
-      SyncMethod<std::string(std::string, std::string) noexcept>{0, L"ConvertHtmlToPdf"},
+      SyncMethod<std::string(std::string, std::string, Callback<std::string>) noexcept>{0, L"ConvertHtmlToPdf"},
   };
 
   template <class TModule>
@@ -25,8 +25,8 @@ struct PDFGenSpec : winrt::Microsoft::ReactNative::TurboModuleSpec {
     REACT_SHOW_METHOD_SPEC_ERRORS(
           0,
           "ConvertHtmlToPdf",
-          "    REACT_SYNC_METHOD(ConvertHtmlToPdf) std::string ConvertHtmlToPdf(std::string htmlFileName, std::string pdfFileName) noexcept { /* implementation */ }\n"
-          "    REACT_SYNC_METHOD(ConvertHtmlToPdf) static std::string ConvertHtmlToPdf(std::string htmlFileName, std::string pdfFileName) noexcept { /* implementation */ }\n");
+          "    REACT_SYNC_METHOD(ConvertHtmlToPdf) std::string ConvertHtmlToPdf(std::string htmlFileName, std::string pdfFileName, std::function<void(std::string)> const & callback) noexcept { /* implementation */ }\n"
+          "    REACT_SYNC_METHOD(ConvertHtmlToPdf) static std::string ConvertHtmlToPdf(std::string htmlFileName, std::string pdfFileName, std::function<void(std::string)> const & callback) noexcept { /* implementation */ }\n");
   }
 };
 
