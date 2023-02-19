@@ -31,7 +31,7 @@ const MainScreen = ({ navigation }: any) => {
   }, [])
 
   const handleCreate = () => {
-    navigation.push('Edit' as never, {})
+    navigation.push('Edit', {})
   }
 
   const handleDelete = async (id: number) => {
@@ -72,7 +72,11 @@ const MainScreen = ({ navigation }: any) => {
       setShowFlyout: (showFlyout: number | null) => void,
     ) => {
       const handleEdit = (id: number) => {
-        navigation.push('Edit' as never, { id } as never)
+        navigation.push('Edit', { id })
+      }
+
+      const handlePrint = (id: number) => {
+        navigation.push('Print', { id })
       }
 
       const id = item.id
@@ -88,7 +92,7 @@ const MainScreen = ({ navigation }: any) => {
               <TouchableHighlight
                 accessibilityRole="button"
                 {...{ tooltip: 'Imprimir' }}
-                onPress={() => {}}
+                onPress={() => handlePrint(id)}
                 style={styles.searchButton}
                 underlayColor={colors.border}>
                 <Text style={{ ...styles.icon, fontSize: 14 }}>&#xE749;</Text>

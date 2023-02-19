@@ -20,6 +20,7 @@
     <ClInclude Include="ReactPackageProvider.h" />
     <ClInclude Include="AutolinkedNativeModules.g.h" />
     <ClInclude Include="..\..\node_modules\react-native-fs\windows\RNFS\RNFSManager.h" />
+    <ClInclude Include="PDFGen.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">

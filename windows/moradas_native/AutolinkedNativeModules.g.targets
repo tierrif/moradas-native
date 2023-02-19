@@ -6,6 +6,10 @@
     <ProjectReference Include="$(ProjectDir)..\..\node_modules\react-native-fs\windows\RNFS\RNFS.vcxproj">
       <Project>{4f89a807-a843-4df0-8d74-a04a3f48fef9}</Project>
     </ProjectReference>
+    <!-- Projects from react-native-print -->
+    <ProjectReference Include="$(ProjectDir)..\..\node_modules\react-native-print\windows\RNPrint\RNPrint.vcxproj">
+      <Project>{6f9ac236-d97d-4c75-971b-91ac99d7c23b}</Project>
+    </ProjectReference>
     <!-- Projects from react-native-screens -->
     <ProjectReference Include="$(ProjectDir)..\..\node_modules\react-native-screens\windows\RNScreens\RNScreens.vcxproj">
       <Project>{d638f49e-29d2-4699-ac52-facd82fa7138}</Project>

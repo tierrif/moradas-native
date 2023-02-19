@@ -2,6 +2,8 @@
 #include "ReactPackageProvider.h"
 #include "NativeModules.h"
 
+#include "PDFGen.h"
+
 using namespace winrt::Microsoft::ReactNative;
 
 namespace winrt::moradas_native::implementation
