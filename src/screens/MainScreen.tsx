@@ -9,11 +9,27 @@ import {
   FlatList,
   Pressable,
 } from 'react-native'
+import { DocumentDirectoryPath, unlink, writeFile } from 'react-native-fs'
 import { Popup } from 'react-native-windows'
 import { deleteAddress, getAddresses } from '../addresses/address-handler'
 import { Address } from '../addresses/types'
 import { ScreenWrapper } from '../components/ScreenWrapper'
 import useStyles from '../themes/styles'
+import htmlToPdf from '../NativePDFGen'
+import RNPrint from 'react-native-print'
+
+const genFileName = (length: number) => {
+  let result = ''
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const charactersLength = characters.length
+  let counter = 0
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    counter += 1
+  }
+  return result
+}
 
 const MainScreen = ({ navigation }: any) => {
   const [search, setSearch] = useState('')
@@ -75,8 +91,25 @@ const MainScreen = ({ navigation }: any) => {
         navigation.push('Edit', { id })
       }
 
-      const handlePrint = (id: number) => {
-        navigation.push('Print', { id })
+      const handlePrint = async (id: number) => {
+        const { content } = (await getAddresses())[id]
+        const html = `<p style="
+            font-family: sans-serif;
+            font-size: 14px;
+            ">${content.replace(/\n/g, '<br>')}</h1>`
+        await writeFile(DocumentDirectoryPath + '/file.html', html)
+        const pdf = genFileName(7) + '.pdf'
+        htmlToPdf?.ConvertHtmlToPdf('file.html', pdf, async (path?: string) => {
+          if (path && !path.startsWith('[ERR]')) {
+            await RNPrint.print({
+              filePath: path,
+            })
+
+            await unlink(DocumentDirectoryPath + '/' + pdf)
+          } else if (path?.startsWith('[ERR]')) {
+            console.error(path)
+          }
+        })
       }
 
       const id = item.id

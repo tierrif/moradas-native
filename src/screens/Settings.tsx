@@ -38,11 +38,13 @@ export const SettingsPage: React.FunctionComponent<{}> = ({
         </TouchableHighlight>
         <Text style={styles.title}>Definições</Text>
       </View>
+      <View style={{ flex: 1 }} />
       <Text style={styles.subTitle}>Versão: {pkg.version}</Text>
       <View
         style={{
           flexWrap: 'wrap',
           flexDirection: 'row',
+          marginBottom: 0,
         }}>
         <Text style={{ marginRight: 3, ...styles.subTitle, marginTop: 0 }}>
           Pasta de configurações:
@@ -52,6 +54,25 @@ export const SettingsPage: React.FunctionComponent<{}> = ({
           aria-selected={true}
           style={{ ...styles.subTitle, fontWeight: 'normal', marginTop: 0 }}>
           {RNFS.DocumentDirectoryPath}
+        </Text>
+      </View>
+      <View
+        style={{
+          flexWrap: 'wrap',
+          flexDirection: 'row',
+          marginBottom: 0,
+        }}>
+        <Text style={{ ...styles.subTitle, marginTop: 0 }}>
+          Este software é distribuido sob a licença MIT.
+        </Text>
+      </View>
+      <View
+        style={{
+          flexWrap: 'wrap',
+          flexDirection: 'row',
+        }}>
+        <Text style={{ ...styles.subTitle, marginTop: 0 }}>
+          Copyright (c) 2023 Tierri Ferreira
         </Text>
       </View>
     </ScreenWrapper>
